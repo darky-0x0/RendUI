@@ -1,15 +1,12 @@
 #pragma once
 #include "Renderer.h"
 #include "Input.h"
-
-
-
-
+#include <string>	
 
 namespace RendUI {
 	class Engine {
 	public:
-		Engine(int width, int height, const string& title);
+		Engine(int width, int height, const std::string& title);
 		void run();
 	private:
 		Renderer renderer;
