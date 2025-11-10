@@ -9,10 +9,12 @@ using namespace RendUI;
 
 int main()
 {
+	setlocale(0, "");
 	Engine engine(800, 600, "RendUI Engine Test");
-	engine.addPoint(100.f, 100.f);
-	engine.addLine({ 150.f, 150.f }, { 300.f, 300.f });
-	engine.addPolygon({ {400.f, 400.f}, {500.f, 400.f}, {550.f, 500.f}, {450.f, 550.f} });
+	engine.addPoint(2.f, 1.f);
+	engine.addLine({ 3.f, 3.f }, { 6.f, 6.f });
+	engine.addPolygon({ {8.f, 8.f}, {10.f, 8.f}, {11.f, 10.f}, {9.f, 11.f} });
+	//engine.deleteAllPrimitives();
 	engine.run();
 	return 0;
 }

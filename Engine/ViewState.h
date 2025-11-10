@@ -16,13 +16,14 @@ namespace RendUI {
 
 		float getZoom() const { return zoomLevel; }
 		sf::Vector2f getOffset() const { return offset; }
+		sf::View& getView() { return view; }
 
 	private:
+		sf::View view;
 		sf::Vector2f offset;
 		float zoomLevel;
-		sf::View view;
-		float width;
-		float height;
+		float width = 0.f;
+		float height = 0.f;
 		sf::Vector2f initialCenter;
 		sf::Vector2f initialSize;
 	};

@@ -9,6 +9,7 @@ namespace RendUI {
 		void addPoint(float x, float y);
 		void addLine(Point a, Point b);
 		void addPolygon(const std::vector<Point>& vertices);
+		void clearAll();
 
 		// Получение данных
 		const std::vector<Point>& getPoints() const;

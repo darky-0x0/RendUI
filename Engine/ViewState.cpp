@@ -5,9 +5,12 @@
 
 using namespace RendUI;
 
-ViewState::ViewState(float width, float height) : offset(0, 0), zoomLevel(1.0f), view(sf::FloatRect({ 0,0 }, {width, height})) {
+ViewState::ViewState(float firstWidth, float firstHeight) : offset(0, 0), zoomLevel(1.0f), view(sf::FloatRect({ 0,0 }, { firstWidth, firstHeight })) {
+
 	initialCenter = view.getCenter();
 	initialSize = view.getSize();
+
+	view.setSize({ initialSize.x, -initialSize.y });
 }
 
 
@@ -28,7 +31,7 @@ void ViewState::zoom(float factor) {
 void RendUI::ViewState::resize(sf::RenderWindow& window) {
 	width = (float)window.getSize().x;
 	height = (float)window.getSize().y;
-	view.setSize({ width * zoomLevel, height * zoomLevel });
+	view.setSize({ width * zoomLevel, -height * zoomLevel });
 }
 
 void RendUI::ViewState::resetOffset() {

@@ -22,6 +22,12 @@ void PrimitivesManager::addPolygon(const std::vector<Point>& vertices) {
 	polygons.push_back(poly);
 }
 
+void RendUI::PrimitivesManager::clearAll() {
+	points.clear();
+	lines.clear();
+	polygons.clear();
+}
+
 const std::vector<Point>& PrimitivesManager::getPoints() const { return points; }
 const std::vector<Line>& PrimitivesManager::getLines() const { return lines; }
 const std::vector<Polygon>& PrimitivesManager::getPolygons() const { return polygons; }

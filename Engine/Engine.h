@@ -1,10 +1,10 @@
 #pragma once
 #include "Renderer.h"
 #include "Input.h"
-#include "Grid.h"
 #include "Primitive.hpp"
 #include "PrimitivesManager.h"
 #include "ViewState.h"
+#include "CoordinateSystem.h"
 
 
 namespace RendUI {
@@ -17,16 +17,17 @@ namespace RendUI {
 		void addPoint(float x, float y);
 		void addLine(Point a, Point b);
 		void addPolygon(const std::vector<Point>& vertices);
+		void deleteAllPrimitives();
 
 	private:
 		Renderer renderer;
 		ViewState viewState;
 		Input input;
-		Grid grid;
+		//Grid grid;
+		CoordinateSystem coordSystem;
 		PrimitivesManager primitives;
 		bool running = false;
 		float zoomFactor = 1.1f;
-		//float moveSpeed = 20.0f;
 		sf::Vector2f lastMousePos;
 		bool rightMousePressed = false;
 	};
