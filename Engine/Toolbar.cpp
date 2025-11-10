@@ -26,8 +26,7 @@ Toolbar::Toolbar(float width, float height) {
 
 
 void Toolbar::addTool(ToolType type, const std::string& iconFile, const sf::Vector2f& position) {
-	tools.emplace_back(Tool{ type, sf::Texture(), sf::Sprite() });
-
+	/*Tool t;*/
 }
 
 void Toolbar::draw(sf::RenderWindow& window) {

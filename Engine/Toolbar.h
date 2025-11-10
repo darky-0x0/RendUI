@@ -15,6 +15,8 @@ namespace RendUI {
 		ToolType type;
 		sf::Texture texture;
 		sf::Sprite sprite;
+		bool hovered = false;
+		bool selected = false;
 	};
 
 	class Toolbar {
@@ -23,8 +25,7 @@ namespace RendUI {
 
 		void addTool(ToolType type, const std::string& iconFile, const sf::Vector2f& position);
 		void draw(sf::RenderWindow& window);
-		void processClick(sf::Vector2f mousePos);
-		void processHover(sf::Vector2f mousePos);
+	/*	void h*/
 
 		ToolType getCurrentTool() const { return currentTool; }
 
@@ -44,3 +45,5 @@ namespace RendUI {
 		sf::Color activeColor = sf::Color(0, 255, 0, 150);
 	};
 }
+
+
