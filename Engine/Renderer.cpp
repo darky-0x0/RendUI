@@ -19,15 +19,6 @@ sf::RenderWindow& Renderer::getWindow() { return window; }
 
 
 
-
-void Renderer::updateView(float x, float y) {
-	windowWidth = (float)window.getSize().x;
-	windowHeight = (float)window.getSize().y;
-	sf::View view(sf::FloatRect({ 0, 0 }, { windowWidth, windowHeight }));
-	window.setView(view);
-}
-
-
 void Renderer::update(const PrimitivesManager& primitives) {
 	const auto& points = primitives.getPoints();
 	const auto& lines = primitives.getLines();

@@ -156,6 +156,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PrimitivesManager.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="ViewState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="Primitive.hpp" />
     <ClCompile Include="PrimitivesManager.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="ViewState.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

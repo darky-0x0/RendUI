@@ -11,7 +11,6 @@ namespace RendUI {
 		void clear();
 		void display();
 		bool isOpen() const;
-		void updateView(float x, float y);
 
 		// update читает менеджер, поэтому принимаем const&
 		void update(const PrimitivesManager& primitives);

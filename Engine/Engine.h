@@ -4,6 +4,7 @@
 #include "Grid.h"
 #include "Primitive.hpp"
 #include "PrimitivesManager.h"
+#include "ViewState.h"
 
 
 namespace RendUI {
@@ -19,10 +20,15 @@ namespace RendUI {
 
 	private:
 		Renderer renderer;
+		ViewState viewState;
 		Input input;
 		Grid grid;
 		PrimitivesManager primitives;
 		bool running = false;
+		float zoomFactor = 1.1f;
+		//float moveSpeed = 20.0f;
+		sf::Vector2f lastMousePos;
+		bool rightMousePressed = false;
 	};
 }
 
