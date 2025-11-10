@@ -1,26 +1,35 @@
 #pragma once
 
-#include <memory>
-#include <string>
+#include "Primitive.hpp"
+#include "PrimitivesManager.h"
 
-
-// ‘орвард-деклараци€, чтобы не включать SFML в публичный заголовок
-namespace sf { class RenderWindow; }
 
 namespace RendUI {
 	class Renderer {
 	public:
 		Renderer(int weidth, int height, const std::string& title);
-		~Renderer(); // объ€вл€ем, но определим в .cpp
 		void clear();
 		void display();
 		bool isOpen() const;
+		void updateView(float x, float y);
+
+		// update читает менеджер, поэтому принимаем const&
+		void update(const PrimitivesManager& primitives);
+
 		// возвращаем указатель, чтобы не копировать объект и не экспортировать определение типа
-		sf::RenderWindow* getWindow();
+		sf::RenderWindow& getWindow();
+
+
+		// принимаем const& чтобы избежать копировани€ и предупреждений о преобразовании
+		void drawPoint(const Point& p, const float radius = 6.0f);
+		void drawLine(const Line& l);
+		void drawPolygon(const Polygon& poly);
+
+		void drawGrid(float step, sf::Color gridColor);
 
 	private:
-		// используем пользовательский тип делитера (function pointer), чтобы не инстанцировать std::default_delete<sf::RenderWindow>
-		// в заголовке (default_delete требует полного типа и вызывает static_assert)
-		std::unique_ptr<sf::RenderWindow> window;
+		sf::RenderWindow window;
+		float windowWidth;
+		float windowHeight;
 	};
 }

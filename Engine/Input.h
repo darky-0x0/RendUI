@@ -1,8 +1,14 @@
 #pragma once
+#include "Renderer.h"
 
 
+namespace RendUI {
+	class Input {
+	public:
+		void process(sf::RenderWindow& window);
+		bool isClosed() const { return closed; }
 
-class Input
-{
-};
-
+	private:
+		bool closed = false;
+	};
+}
