@@ -16,6 +16,15 @@ namespace RendUI {
 		const std::vector<Line>& getLines() const;
 		const std::vector<Polygon>& getPolygons() const;
 
+		// Удаление примитива, находящегося в радиусе от точки (x, y)
+		bool deletePrimitiveAt(float x, float y);
+
+		// Вспомогательная функция для вычисления расстояния между точками
+		float distance(const Point& a, const Point& b);
+
+		// Расстояние от точки p до отрезка (a, b)
+		float distanceToSegment(const Point& p, const Point& a, const Point& b);
+
 	private:
 		std::vector<Point> points;
 		std::vector<Line> lines;

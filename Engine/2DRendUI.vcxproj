@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="CoordinateSystem.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Field.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="pch.h" />
@@ -163,6 +164,7 @@
   <ItemGroup>
     <ClCompile Include="CoordinateSystem.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Field.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
