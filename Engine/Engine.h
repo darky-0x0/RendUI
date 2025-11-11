@@ -5,6 +5,7 @@
 #include "PrimitivesManager.h"
 #include "ViewState.h"
 #include "CoordinateSystem.h"
+#include "Toolbar.h"
 
 
 namespace RendUI {
@@ -22,8 +23,9 @@ namespace RendUI {
 	private:
 		Renderer renderer;
 		ViewState viewState;
+		ViewState UIViewState;
 		Input input;
-		//Grid grid;
+		Toolbar toolbar;
 		CoordinateSystem coordSystem;
 		PrimitivesManager primitives;
 		bool running = false;

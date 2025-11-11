@@ -156,6 +156,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PrimitivesManager.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RoundedRectangleShape.h" />
     <ClInclude Include="Toolbar.h" />
     <ClInclude Include="ViewState.h" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClCompile Include="Primitive.hpp" />
     <ClCompile Include="PrimitivesManager.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RoundedRectangleShape.cpp" />
     <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="ViewState.cpp" />
   </ItemGroup>

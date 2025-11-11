@@ -1,49 +1,63 @@
 #pragma once
 
+#include "RoundedRectangleShape.h"
+#include "ViewState.h"
+
 
 namespace RendUI {
-	enum class ToolType {
-		None,
-		Point,
-		Line,
-		Polygon,
-		Erase,
-		Clear
-	};
 
-	struct Tool {
-		ToolType type;
-		sf::Texture texture;
-		sf::Sprite sprite;
-		bool hovered = false;
-		bool selected = false;
-	};
+    enum class ToolType {
+        None,
+        DrawPoint,
+        // Можно добавить другие инструменты позже
+    };
 
-	class Toolbar {
-	public:
-		Toolbar(float width, float height);
+    class Tool {
+    public:
+        ToolType type;
+        std::unique_ptr<sf::Texture> texture;
+        std::unique_ptr<sf::Sprite> sprite;
+        sf::FloatRect bounds;
+        sf::Vector2f relativePos; // позиция внутри тулбара
 
-		void addTool(ToolType type, const std::string& iconFile, const sf::Vector2f& position);
-		void draw(sf::RenderWindow& window);
-	/*	void h*/
+        Tool(ToolType t, const std::string& iconFile, const sf::Vector2f& relPos)
+            : type(t), relativePos(relPos)
+        {
+            texture = std::make_unique<sf::Texture>();
+            if (!texture->loadFromFile(iconFile)) {
+                std::cout << "Не удалось загрузить иконку: " << iconFile << std::endl;
+                exit(1);
+            }
 
-		ToolType getCurrentTool() const { return currentTool; }
+            sprite = std::make_unique<sf::Sprite>(*texture);
+            sprite->setScale({ 0.3f, 0.3f });
+            sprite->setPosition(relPos); // пока ставим как есть
+            bounds = sprite->getGlobalBounds();
+        }
 
-	private:
-		sf::RectangleShape background;
-		sf::Color bgColor = sf::Color(50, 50, 50, 200);
-		sf::Color outlineColor = sf::Color::White;
-		float cornerRadius = 10.f;
+        void draw(sf::RenderWindow& window, const sf::Vector2f& toolbarPos) {
+            if (sprite) {
+                sprite->setPosition(toolbarPos + relativePos); // глобальная позиция = тулбар + смещение
+                window.draw(*sprite);
+            }
+        }
+    };
 
-		std::vector<Tool> tools;
-		ToolType currentTool = ToolType::None;
+    class Toolbar {
+    public:
+        Toolbar(const sf::Vector2f& size, float cornerRadius);
 
-		// Рамка подсветки
-		sf::RectangleShape hoverRect;
-		sf::RectangleShape selectedRect;
-		sf::Color hoverColor = sf::Color(255, 255, 255, 150);
-		sf::Color activeColor = sf::Color(0, 255, 0, 150);
-	};
+        void addTool(ToolType type, const std::string& iconFile, const sf::Vector2f& position);
+        void draw(sf::RenderWindow& window);
+        void handleEvent(const sf::Event& event, const sf::RenderWindow& window);
+
+        ToolType getSelectedTool() const { return selectedTool; }
+
+    private:
+        RoundedRectangleShape background;
+        std::vector<Tool> tools;
+        ToolType selectedTool = ToolType::None;
+        int hoveredToolIndex = -1;
+    };
+
 }
-
-

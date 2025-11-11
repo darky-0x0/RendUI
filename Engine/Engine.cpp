@@ -7,16 +7,31 @@
 using namespace RendUI;
 
 
-Engine::Engine(int width, int height, const std::string& title) : renderer(width, height, title), coordSystem(50.f), viewState(width, height), running(true) {
+Engine::Engine(int width, int height, const std::string& title) 
+	: toolbar({300.f, 50.f}, 10.f), renderer(width, height, title), coordSystem(50.f), viewState(width, height), UIViewState(width, height), running(true) {
+	auto image = sf::Image{};
+	if (!image.loadFromFile("icons/draw_polygon.png")) {
+				std::cout << "Не удалось загрузить иконку приложения.";
+				exit(1);
+	}
+	renderer.getWindow().setIcon(image.getSize(), image.getPixelsPtr());
+	
 	// Устанавливаем шаг сетки в менеджер примитивов
 	float step = coordSystem.getStep();
 	renderer.setStep(step);
+
+	// Добавление инструментов
+	toolbar.addTool(RendUI::ToolType::DrawPoint, "icons/draw_point.png", { 10.f, 10.f });
+	toolbar.addTool(RendUI::ToolType::DrawPoint, "icons/draw_point.png", { 40.f, 10.f });
 }
 
 
 void Engine::run() {
 
 	while (running && renderer.isOpen()) {
+
+		// Сохраняем стандартный вид окна для UI
+		UIViewState.setView((float)renderer.getWindow().getSize().x, (float)renderer.getWindow().getSize().y);
 
 
 		// ----------------------------------------------------- ИВЕНТЫ -----------------------------------------------------
@@ -34,6 +49,8 @@ void Engine::run() {
 				// Обновляем view в Renderer
 				//renderer.updateView(resized->size.x, resized->size.y);
 				viewState.resize(renderer.getWindow());
+				// Фикс UI при ресайзе
+				UIViewState.resizeUI(renderer.getWindow());
 			}
 
 			if (const auto* pressed = event.getIf<sf::Event::MouseButtonPressed>()) {
@@ -100,6 +117,7 @@ void Engine::run() {
 
 			}
 
+			toolbar.handleEvent(event, renderer.getWindow());
 		}
 
 		// ----------------------------------------------- КОНЕЦ ИВЕНТОВ ------------------------------------------------
@@ -118,13 +136,23 @@ void Engine::run() {
 		// Применяем текущее состояние вида
 		viewState.applyTo(renderer.getWindow());
 
-		//// Указываем рендер, который будет использоваться для отрисовки сетки
-		//grid.draw(renderer);
-
 		// Рисуем координатную сетку
 		coordSystem.draw(renderer.getWindow(), viewState.getView());
 
+		// Рисуем примитивы
 		renderer.update(primitives);
+
+
+		//---------------------------------------------------------- Рисование поверх экрана ----------------------------------------------------------
+		// Переключаемся на «экранный» вид
+		renderer.getWindow().setView(UIViewState.getView());
+		// Рисуем Toolbar
+		toolbar.draw(renderer.getWindow());
+		// Восстанавливаем вид сцены
+		renderer.getWindow().setView(viewState.getView());
+
+		//---------------------------------------------------------------------------------------------------------------------------------------------
+
 
 		renderer.display();
 	}

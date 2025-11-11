@@ -34,6 +34,13 @@ void RendUI::ViewState::resize(sf::RenderWindow& window) {
 	view.setSize({ width * zoomLevel, -height * zoomLevel });
 }
 
+void RendUI::ViewState::resizeUI(sf::RenderWindow& window) {
+	width = (float)window.getSize().x;
+	height = (float)window.getSize().y;
+	view.setSize({ width, height }); // положительные размеры
+	view.setCenter({ width / 2.f, height / 2.f });
+}
+
 void RendUI::ViewState::resetOffset() {
 	offset = { 0.f, 0.f };
 	zoomLevel = 1.f;
