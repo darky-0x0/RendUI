@@ -17,7 +17,7 @@ Engine::Engine(int width, int height, const std::string& title)
 
 	// Подгружаем иконку приложения
 	auto image = sf::Image{};
-	if (!image.loadFromFile("icons/app_icon.png")) {
+	if (!image.loadFromFile("sources/icons/app_icon.png")) {
 				std::cout << "Не удалось загрузить иконку приложения.";
 				exit(1);
 	}
@@ -28,15 +28,15 @@ Engine::Engine(int width, int height, const std::string& title)
 	renderer.setStep(step);
 
 	// Добавление инструментов
-	toolbar.addTool(RendUI::ToolType::Point, "icons/draw_point.png");
-	toolbar.addTool(RendUI::ToolType::Line, "icons/draw_line.png");
-	toolbar.addTool(RendUI::ToolType::Polygon, "icons/draw_polygon.png");
-	toolbar.addTool(RendUI::ToolType::Delete, "icons/delete_primitive.png");
-	toolbar.addTool(RendUI::ToolType::Clear, "icons/delete_all.png");
+	toolbar.addTool(RendUI::ToolType::Point, "sources/icons/draw_point.png");
+	toolbar.addTool(RendUI::ToolType::Line, "sources/icons/draw_line.png");
+	toolbar.addTool(RendUI::ToolType::Polygon, "sources/icons/draw_polygon.png");
+	toolbar.addTool(RendUI::ToolType::Delete, "sources/icons/delete_primitive.png");
+	toolbar.addTool(RendUI::ToolType::Clear, "sources/icons/delete_all.png");
 
 	// Добавление элементов в левое поле
 	leftField.addItem({
-		"icons/point.png",
+		"sources/icons/point.png",
 		40.f,
 		false,
 		[]() { std::cout << "Выбран Point\n"; },
@@ -44,7 +44,7 @@ Engine::Engine(int width, int height, const std::string& title)
 	});
 
 	leftField.addItem({
-		"icons/line.png",
+		"sources/icons/line.png",
 		40.f,
 		false,
 		[]() { std::cout << "Выбран Line\n"; },
@@ -52,7 +52,7 @@ Engine::Engine(int width, int height, const std::string& title)
 	});
 
 	leftField.addItem({
-		"icons/polygon.png",
+		"sources/icons/polygon.png",
 		40.f,
 		false,
 		[]() { std::cout << "Выбран Polygon\n"; },
@@ -60,154 +60,154 @@ Engine::Engine(int width, int height, const std::string& title)
 	});
 
 	leftField.addItem({
-	"icons/polygon.png",
+	"sources/icons/polygon.png",
 	40.f,
 	false,
 	[]() { std::cout << "Выбран Polygon\n"; },
 	[]() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-	"icons/polygon.png",
+	"sources/icons/polygon.png",
 	40.f,
 	false,
 	[]() { std::cout << "Выбран Polygon\n"; },
 	[]() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-	"icons/polygon.png",
+	"sources/icons/polygon.png",
 	40.f,
 	false,
 	[]() { std::cout << "Выбран Polygon\n"; },
 	[]() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-	"icons/polygon.png",
+	"sources/icons/polygon.png",
 	40.f,
 	false,
 	[]() { std::cout << "Выбран Polygon\n"; },
 	[]() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },
 []() { std::cout << "Удалён Polygon\n"; }
 		});
 	leftField.addItem({
-"icons/polygon.png",
+"sources/icons/polygon.png",
 40.f,
 false,
 []() { std::cout << "Выбран Polygon\n"; },

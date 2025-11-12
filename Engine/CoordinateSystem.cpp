@@ -7,7 +7,7 @@
 using namespace RendUI;
 
 CoordinateSystem::CoordinateSystem(float step) : step(step), gridColor(60, 60, 60), axisColor(200, 50, 50) {
-	if (!font.openFromFile("clash_text_vi_th.ttf")) { // путь к шрифту
+	if (!font.openFromFile("sources/fonts/clash_text_vi_th.ttf")) { // путь к шрифту
 		std::cerr << "Не удалось загрузить шрифт!" << std::endl;
 		exit(1);
 	}

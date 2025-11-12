@@ -23,6 +23,7 @@ namespace RendUI {
         float scrollOffset = 0.f;
         float totalContentHeight = 0.f;
         float scrollbarWidth = 10.f;
+        float initialScrollOffset = 0.f;
 
         bool draggingScrollbar = false;
         float dragStartY = 0.f;
