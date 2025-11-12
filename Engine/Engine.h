@@ -7,6 +7,7 @@
 #include "CoordinateSystem.h"
 #include "Toolbar.h"
 #include "Field.h"
+#include "ItemElement.h"
 
 
 namespace RendUI {

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <functional>
 
 #include <SFML/Graphics.hpp>
 

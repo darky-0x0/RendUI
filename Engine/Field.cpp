@@ -4,10 +4,25 @@
 
 using namespace RendUI;
 
-Field::Field(const sf::Vector2f& pos, const sf::Vector2f& size)
-    : position(pos), size(size), background(size, 12.f)
+// helper для std::visit с несколькими лямбдами
+template<class... Ts>
+struct overloaded : Ts... { using Ts::operator()...; };
+template<class... Ts>
+overloaded(Ts...) -> overloaded<Ts...>;
+
+Field::Field(const sf::Vector2f& pos, const sf::Vector2f& sz)
+    : background(sz, 12.f),
+    position(pos),
+    size(sz),
+    elementSpacing(4.f),
+    scrollOffset(0.f),
+    totalContentHeight(0.f),
+    scrollbarWidth(10.f),
+    draggingScrollbar(false),
+    dragStartY(0.f),
+    initialScrollOffset(0.f)
 {
-    background.setPosition(pos);
+    background.setPosition(position);
     background.setFillColor(bgColor);
     background.setOutlineThickness(1.5f);
     background.setOutlineColor(borderColor);
@@ -16,78 +31,78 @@ Field::Field(const sf::Vector2f& pos, const sf::Vector2f& size)
     scrollbar.setSize({ scrollbarWidth, size.y });
 }
 
-void Field::addItem(const FieldItem& item) {
-    items.push_back(item);
-    totalContentHeight += item.height + 4.f;
+void Field::update() {
+    // Удаляем элементы, которые помечены для удаления
+    elements.erase(
+        std::remove_if(elements.begin(), elements.end(),
+            [](const std::unique_ptr<FieldElement>& el) {
+                auto item = dynamic_cast<ItemElement*>(el.get());
+                return item && item->markedForDeletion;
+            }),
+        elements.end()
+    );
+}
+
+void Field::addRawElement(std::unique_ptr<FieldElement>&& el) {
+    if (!el) return;
+    totalContentHeight += el->getHeight() + elementSpacing;
+    elements.push_back(std::move(el));
 }
 
 void Field::clear() {
-    items.clear();
+    elements.clear();
     totalContentHeight = 0.f;
     scrollOffset = 0.f;
 }
 
-void Field::draw(sf::RenderWindow& window, ViewState& view) {
-    float yCenter = view.getView().getCenter().y - size.y / 2.f;
+void Field::draw(sf::RenderWindow& window, const sf::View& view) {
+    Field::update();
+
+    // yCenter — верхняя координата поля (по желанию ты центрируешь фон по view)
+    float yCenter = view.getCenter().y - size.y / 2.f;
     background.setPosition({ position.x, yCenter });
     window.draw(background);
 
-    float topLimit = yCenter + 40;
-    float bottomLimit = yCenter + size.y - 40;
+    // отрисовываем элементы, только те, что попадают в видимую область поля
     float y = yCenter + 5.f - scrollOffset;
+    const float contentWidth = size.x - scrollbarWidth - 6.f; // отступы учтены в draw
 
-    for (auto& item : items) {
-        if (y + item.height < topLimit || y > bottomLimit) {
-            y += item.height + 4.f;
+    for (auto& el : elements) {
+        float h = el->getHeight();
+        if (y + h < yCenter || y > yCenter + size.y) {
+            // за пределами видимости, просто смещаемся и не рисуем
+            y += h + elementSpacing;
             continue;
         }
 
-        sf::RectangleShape itemBg({ size.x - scrollbarWidth - 10.f, item.height });
-        itemBg.setPosition({ position.x + 5.f, y });
-        itemBg.setFillColor(item.selected ? selectedColor : sf::Color(40, 40, 40));
-        itemBg.setOutlineColor(borderColor);
-        itemBg.setOutlineThickness(1.f);
-        window.draw(itemBg);
-
-        static sf::Texture texture;
-        if (texture.loadFromFile(item.iconPath)) {
-            sf::Sprite icon(texture);
-            float iconSize = item.height * 0.7f;
-            icon.setScale({ iconSize / texture.getSize().x, iconSize / texture.getSize().y });
-            icon.setPosition({ itemBg.getPosition().x + 8.f, y + (item.height - iconSize) / 2 });
-            window.draw(icon);
-        }
-
-        sf::CircleShape deleteBtn(6.f);
-        deleteBtn.setFillColor(deleteColor);
-        deleteBtn.setPosition({ itemBg.getPosition().x + itemBg.getSize().x - 14.f, y + item.height / 3 });
-        window.draw(deleteBtn);
-
-        y += item.height + 4.f;
+        // передаём позицию верхнего левого угла элемента
+        el->draw(window, { position.x + 5.f, y }, contentWidth);
+        y += h + elementSpacing;
     }
 
-    // Отрисовка скроллбара
+    // скроллбар (рисуется поверх)
     if (totalContentHeight > size.y) {
         float scrollRatio = size.y / totalContentHeight;
         float scrollbarHeight = size.y * scrollRatio;
-        float yCenter = view.getView().getCenter().y - size.y / 2.f;
-        float scrollbarY = yCenter + (scrollOffset / totalContentHeight) * size.y;
+        float scrollbarY = yCenter + (scrollOffset / (totalContentHeight - size.y)) * (size.y - scrollbarHeight);
         scrollbar.setPosition({ position.x + size.x - scrollbarWidth, scrollbarY });
         scrollbar.setSize({ scrollbarWidth, scrollbarHeight });
         window.draw(scrollbar);
     }
 }
 
-void Field::handleEvent(const sf::Event& event, const sf::RenderWindow& window, const sf::View& view) {
+void Field::handleEvent(const sf::Event& event, sf::RenderWindow& window, const sf::View& view) {
+
+    // mouse pos in same coords as view (то, в которых мы рисуем фон/элементы)
     sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
     sf::Vector2f mousePos = window.mapPixelToCoords(mousePixel, view);
     float yCenter = view.getCenter().y - size.y / 2.f;
 
-    // --- Перетаскивание скроллбара ---
+    // ---- drag scrollbar ----
     if (event.is<sf::Event::MouseButtonPressed>()) {
-        const auto& mouse = event.getIf<sf::Event::MouseButtonPressed>();
-        if (mouse->button == sf::Mouse::Button::Left) {
-            if (scrollbar.getGlobalBounds().contains(mousePos)) {
+        const auto* mb = event.getIf<sf::Event::MouseButtonPressed>();
+        if (mb && mb->button == sf::Mouse::Button::Left) {
+            if (scrollbar.getGlobalBounds().contains(mousePos) && totalContentHeight > size.y) {
                 draggingScrollbar = true;
                 dragStartY = mousePos.y;
                 initialScrollOffset = scrollOffset;
@@ -96,54 +111,77 @@ void Field::handleEvent(const sf::Event& event, const sf::RenderWindow& window, 
     }
 
     if (event.is<sf::Event::MouseButtonReleased>()) {
-        const auto& mouse = event.getIf<sf::Event::MouseButtonReleased>();
-        if (mouse->button == sf::Mouse::Button::Left) {
+        const auto* mb = event.getIf<sf::Event::MouseButtonReleased>();
+        if (mb && mb->button == sf::Mouse::Button::Left) {
             draggingScrollbar = false;
         }
     }
 
-    if (event.is<sf::Event::MouseMoved>()) {
-        if (draggingScrollbar && totalContentHeight > size.y) {
-            float deltaY = mousePos.y - dragStartY;
-            float scrollArea = size.y - scrollbar.getSize().y;
-            float scrollRatio = totalContentHeight / scrollArea;
+    if (event.is<sf::Event::MouseMoved>() && draggingScrollbar && totalContentHeight > size.y) {
+        // движение ползунка меняет scrollOffset
+        sf::Vector2i mpix = sf::Mouse::getPosition(window);
+        sf::Vector2f mpos = window.mapPixelToCoords(mpix, view);
+        float deltaY = mpos.y - dragStartY;
 
-            scrollOffset = initialScrollOffset + deltaY * scrollRatio;
-            if (scrollOffset < 0) scrollOffset = 0;
-            if (scrollOffset > totalContentHeight - size.y)
-                scrollOffset = totalContentHeight - size.y;
-        }
+        float scrollbarHeight = scrollbar.getSize().y;
+        float scrollArea = size.y - scrollbarHeight;
+        if (scrollArea <= 0) return;
+
+        float scrollRatio = (totalContentHeight - size.y) / scrollArea;
+        scrollOffset = initialScrollOffset + deltaY * scrollRatio;
+        if (scrollOffset < 0.f) scrollOffset = 0.f;
+        if (scrollOffset > totalContentHeight - size.y) scrollOffset = totalContentHeight - size.y;
     }
-    // -------------------------------
+    // ---- end drag scrollbar ----
 
-    // --- Обработка кликов по элементам ---
-    if (const auto* mouse = event.getIf<sf::Event::MouseButtonPressed>()) {
-        float y = yCenter + 5.f - scrollOffset;
-        for (auto& item : items) {
-            sf::FloatRect itemRect({ position.x + 5.f, y }, { size.x - scrollbarWidth - 10.f, item.height });
-            sf::FloatRect deleteRect({ itemRect.position.x + itemRect.size.x - 14.f, itemRect.position.y + item.height / 3 }, { 12.f, 12.f });
-
-            if (deleteRect.contains(mousePos)) {
-                if (item.onDelete) item.onDelete();
-                return;
-            }
-
-            if (itemRect.contains(mousePos)) {
-                for (auto& i : items) i.selected = false;
-                item.selected = true;
-                if (item.onClick) item.onClick();
-                return;
-            }
-            y += item.height + 4.f;
+    // ---- forward events to elements (they get their own local position) ----
+    float y = yCenter + 5.f - scrollOffset;
+    for (auto& el : elements) {
+        // позиция верхнего левого угла элемента
+        sf::Vector2f elemPos = { position.x + 5.f, y };
+        // Передаём mousePos (уже в координатах view!) — элемент сравнит mousePos с elemRect
+        el->handleEvent(event, elemPos, size.x - scrollbarWidth, mousePos);
+        // если элемент был кликнут
+        auto* item = dynamic_cast<RendUI::ItemElement*>(el.get());
+        if (item && item->selected) {
+            setSelectedElement(item); // <-- снимаем выделение с остальных
         }
+        y += el->getHeight() + 4.f;
     }
 }
 
-bool Field::isMouseOver(sf::RenderWindow& window, const sf::View& view) const {
-    sf::View oldView = window.getView();
-    window.setView(view);
+bool Field::isMouseOver(const sf::RenderWindow& window, const sf::View& view) const {
+    // Получаем позицию мыши в координатах того же вида (view)
     sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
-    sf::Vector2f mousePos = window.mapPixelToCoords(mousePixel);
-    window.setView(oldView);
-    return background.getGlobalBounds().contains(mousePos);
+    sf::Vector2f mousePos = window.mapPixelToCoords(mousePixel, view);
+
+    // Верхняя координата поля
+    float yTop = view.getCenter().y - size.y / 2.f;
+
+    // Проверяем попадание курсора в границы поля
+    sf::FloatRect bounds({ position.x, yTop }, { size.x, size.y });
+    return bounds.contains(mousePos);
+}
+
+void Field::setSelectedElement(FieldElement* el) {
+    for (auto& e : elements) {
+        auto* item = dynamic_cast<ItemElement*>(e.get());
+        if (item) item->selected = (e.get() == el);
+    }
+}
+void Field::removeElementByLinkedObject(void* objPtr) {
+    elements.erase(
+        std::remove_if(elements.begin(), elements.end(),
+            [objPtr](const std::unique_ptr<FieldElement>& el) {
+                auto item = dynamic_cast<ItemElement*>(el.get());
+                if (!item) return false;
+
+                return std::visit(overloaded{
+                    [objPtr](const std::shared_ptr<Point>& p){ return p.get() == objPtr; },
+                    [objPtr](const std::shared_ptr<Line>& l){ return l.get() == objPtr; },
+                    [objPtr](const std::shared_ptr<Polygon>& poly){ return poly.get() == objPtr; }
+                }, item->linkedObject);
+            }),
+        elements.end()
+    );
 }

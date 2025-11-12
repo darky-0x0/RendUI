@@ -7,8 +7,10 @@
 using namespace RendUI;
 
 
-Engine::Engine(int width, int height, const std::string& title) 
+Engine::Engine(int width, int height, const std::string& title)
 	: leftField({ 10.f, 10.f }, { 200.f, 500.f }), renderer(width, height, title), coordSystem(50.f), viewState(width, height), UIViewState(width, height), running(true) {
+
+	primitives.addElementList(&leftField);
 
 	// Создаём точку-превью
 	previewPoint.setRadius(4.f);
@@ -18,11 +20,11 @@ Engine::Engine(int width, int height, const std::string& title)
 	// Подгружаем иконку приложения
 	auto image = sf::Image{};
 	if (!image.loadFromFile("sources/icons/app_icon.png")) {
-				std::cout << "Не удалось загрузить иконку приложения.";
-				exit(1);
+		std::cout << "Не удалось загрузить иконку приложения.";
+		exit(1);
 	}
 	renderer.getWindow().setIcon(image.getSize(), image.getPixelsPtr());
-	
+
 	// Устанавливаем шаг сетки в менеджер примитивов
 	float step = coordSystem.getStep();
 	renderer.setStep(step);
@@ -33,193 +35,16 @@ Engine::Engine(int width, int height, const std::string& title)
 	toolbar.addTool(RendUI::ToolType::Polygon, "sources/icons/draw_polygon.png");
 	toolbar.addTool(RendUI::ToolType::Delete, "sources/icons/delete_primitive.png");
 	toolbar.addTool(RendUI::ToolType::Clear, "sources/icons/delete_all.png");
-
-	// Добавление элементов в левое поле
-	leftField.addItem({
-		"sources/icons/point.png",
-		40.f,
-		false,
-		[]() { std::cout << "Выбран Point\n"; },
-		[]() { std::cout << "Удалён Point\n"; }
-	});
-
-	leftField.addItem({
-		"sources/icons/line.png",
-		40.f,
-		false,
-		[]() { std::cout << "Выбран Line\n"; },
-		[]() { std::cout << "Удалён Line\n"; }
-	});
-
-	leftField.addItem({
-		"sources/icons/polygon.png",
-		40.f,
-		false,
-		[]() { std::cout << "Выбран Polygon\n"; },
-		[]() { std::cout << "Удалён Polygon\n"; }
-	});
-
-	leftField.addItem({
-	"sources/icons/polygon.png",
-	40.f,
-	false,
-	[]() { std::cout << "Выбран Polygon\n"; },
-	[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-	"sources/icons/polygon.png",
-	40.f,
-	false,
-	[]() { std::cout << "Выбран Polygon\n"; },
-	[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-	"sources/icons/polygon.png",
-	40.f,
-	false,
-	[]() { std::cout << "Выбран Polygon\n"; },
-	[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-	"sources/icons/polygon.png",
-	40.f,
-	false,
-	[]() { std::cout << "Выбран Polygon\n"; },
-	[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-	leftField.addItem({
-"sources/icons/polygon.png",
-40.f,
-false,
-[]() { std::cout << "Выбран Polygon\n"; },
-[]() { std::cout << "Удалён Polygon\n"; }
-		});
-
 }
+
 
 
 void Engine::run() {
 
 	while (running && renderer.isOpen()) {
+
+		// Первичная инициализация элементов
+		
 
 		// Сохраняем стандартный вид окна для UI
 		UIViewState.setView((float)renderer.getWindow().getSize().x, (float)renderer.getWindow().getSize().y);
@@ -386,7 +211,9 @@ void Engine::run() {
 			// Считываем нажатие на интерфейс
 			toolbar.handleEvent(event, renderer.getWindow());
 			// Считываем нажатие на левую панель
+			renderer.getWindow().setView(UIViewState.getView());
 			leftField.handleEvent(event, renderer.getWindow(), UIViewState.getView());
+			renderer.getWindow().setView(viewState.getView());
 			// Восстанавливаем вид сцены
 			renderer.getWindow().setView(viewState.getView());
 		}
@@ -425,7 +252,7 @@ void Engine::run() {
 		// Рисуем Toolbar
 		toolbar.draw(renderer.getWindow());
 		// Рисуем левую панель
-		leftField.draw(renderer.getWindow(), UIViewState);
+		leftField.draw(renderer.getWindow(), UIViewState.getView());
 		// Восстанавливаем вид сцены
 		renderer.getWindow().setView(viewState.getView());
 

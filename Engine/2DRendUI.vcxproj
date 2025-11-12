@@ -152,8 +152,10 @@
     <ClInclude Include="CoordinateSystem.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Field.h" />
+    <ClInclude Include="FieldElement.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="ItemElement.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PrimitivesManager.h" />
     <ClInclude Include="Renderer.h" />
@@ -165,7 +167,9 @@
     <ClCompile Include="CoordinateSystem.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Field.cpp" />
+    <ClCompile Include="FieldElement.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="ItemElement.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

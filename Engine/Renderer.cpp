@@ -20,9 +20,9 @@ sf::RenderWindow& Renderer::getWindow() { return window; }
 
 
 void Renderer::update(const PrimitivesManager& primitives) {
-	const auto& points = primitives.getPoints();
-	const auto& lines = primitives.getLines();
-	const auto& polygons = primitives.getPolygons();
+	const auto points = primitives.getPoints();
+	const auto lines = primitives.getLines();
+	const auto polygons = primitives.getPolygons();
 
 	for (const Point& p : points) { drawPoint(p); }
 	for (const Line& l : lines) { drawLine(l); }
