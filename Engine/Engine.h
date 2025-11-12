@@ -45,7 +45,7 @@ namespace RendUI {
 		sf::CircleShape previewPoint; // Точка, следуемая за курсором
 		bool showPreview = false;
 
-		RendUI::Field leftField; // Левая панель
+		Field leftField; // Левая панель
 	};
 }
 

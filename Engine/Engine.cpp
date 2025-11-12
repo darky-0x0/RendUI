@@ -315,4 +315,5 @@ void Engine::deleteAllPrimitives() {
 	drawingInProgress = false;
 	primitives.clearAll();
 	tempPrimitives.clearAll();
+	leftField.removeAllElements();
 }

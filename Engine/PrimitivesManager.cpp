@@ -6,9 +6,13 @@
 using namespace RendUI;
 
 void PrimitivesManager::addPoint(float x, float y) {
-    Point p;
-    p.x = x;
-    p.y = y;
+    // Проверка на дубликат
+    for (auto& sp : points) {
+        if (sp && sp->x == x && sp->y == y)
+            return; // дубликат найден, не добавляем
+    }
+
+    Point p({ x, y });
     auto sp = std::make_shared<Point>(p);
     points.push_back(sp);
 
@@ -17,27 +21,62 @@ void PrimitivesManager::addPoint(float x, float y) {
 }
 
 void PrimitivesManager::addLine(Point a, Point b) {
-    Line l;
-    l.a = a;
-    l.b = b;
-    auto sp = std::make_shared<Line>(l);
-    lines.push_back(sp);
+    if (a.x == b.x && a.y == b.y) {
+        addPoint(a.x, a.y);
+    }
+    else {
+        // Проверка на дубликат (учитываем направление линии)
+        for (auto& sp : lines) {
+            if (!sp) continue;
+            if ((sp->a.x == a.x && sp->a.y == a.y && sp->b.x == b.x && sp->b.y == b.y) ||
+                (sp->a.x == b.x && sp->a.y == b.y && sp->b.x == a.x && sp->b.y == a.y))
+                return; // дубликат найден
+        }
 
-    if (elementList)
-        elementList->addElement<ItemElement>(40.f, sp, this);
+        Line l({ a, b });
+        auto sp = std::make_shared<Line>(l);
+        lines.push_back(sp);
+
+        if (elementList)
+            elementList->addElement<ItemElement>(40.f, sp, this);
+    }
 }
 
 void PrimitivesManager::addPolygon(const std::vector<Point>& vertices) {
-    auto sp = std::make_shared<Polygon>();
-    for (size_t i = 0; i < vertices.size(); ++i) {
-        Point a = vertices[i];
-        Point b = vertices[(i + 1) % vertices.size()];
-        sp->vertices.push_back({ a, b });
+    if (vertices.size() == 3 && vertices[0].x == vertices[1].x && vertices[0].y == vertices[1].y && vertices[0].x == vertices[2].x && vertices[0].y == vertices[2].y) {
+        addPoint(vertices[0].x, vertices[0].y);
     }
-    polygons.push_back(sp);
+    else if(vertices.size() == 3 && vertices[0].x == vertices[2].x && vertices[0].y == vertices[2].y && (vertices[0].x != vertices[1].x || vertices[0].y != vertices[1].y)) {
+        addLine(vertices[0], vertices[1]);
+    }
+    else {
+        // Проверка на дубликат: простое сравнение вершин
+        for (auto& sp : polygons) {
+            if (!sp || sp->vertices.size() != vertices.size()) continue;
 
-    if (elementList)
-        elementList->addElement<ItemElement>(40.f, sp, this);
+            bool same = true;
+            for (size_t i = 0; i < vertices.size(); ++i) {
+                if (!(sp->vertices[i].a.x == vertices[i].x && sp->vertices[i].a.y == vertices[i].y &&
+                    sp->vertices[i].b.x == vertices[(i + 1) % vertices.size()].x &&
+                    sp->vertices[i].b.y == vertices[(i + 1) % vertices.size()].y)) {
+                    same = false;
+                    break;
+                }
+            }
+            if (same) return; // дубликат найден
+        }
+
+        auto sp = std::make_shared<Polygon>();
+        for (size_t i = 0; i < vertices.size(); ++i) {
+            Point a = vertices[i];
+            Point b = vertices[(i + 1) % vertices.size()];
+            sp->vertices.push_back({ a, b });
+        }
+        polygons.push_back(sp);
+
+        if (elementList)
+            elementList->addElement<ItemElement>(40.f, sp, this);
+    }
 }
 
 // Удаление по shared_ptr

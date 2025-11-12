@@ -39,6 +39,8 @@ namespace RendUI {
 
         void removeElementByLinkedObject(void* objPtr); // Удаление объекта из списка
 
+        void removeAllElements();
+
         void setSelectedElement(FieldElement* el); // новый метод
 
     private:

@@ -41,6 +41,16 @@ void Field::update() {
             }),
         elements.end()
     );
+
+    // Пересчитываем общую высоту содержимого
+    totalContentHeight = 0.f;
+    for (auto& el : elements) {
+        totalContentHeight += el->getHeight() + elementSpacing;
+    }
+
+    // Ограничиваем scrollOffset
+    if (scrollOffset > std::max(0.f, totalContentHeight - size.y))
+        scrollOffset = std::max(0.f, totalContentHeight - size.y);
 }
 
 void Field::addRawElement(std::unique_ptr<FieldElement>&& el) {
@@ -177,11 +187,15 @@ void Field::removeElementByLinkedObject(void* objPtr) {
                 if (!item) return false;
 
                 return std::visit(overloaded{
-                    [objPtr](const std::shared_ptr<Point>& p){ return p.get() == objPtr; },
-                    [objPtr](const std::shared_ptr<Line>& l){ return l.get() == objPtr; },
-                    [objPtr](const std::shared_ptr<Polygon>& poly){ return poly.get() == objPtr; }
-                }, item->linkedObject);
+                    [objPtr](const std::shared_ptr<Point>& p) { return p.get() == objPtr; },
+                    [objPtr](const std::shared_ptr<Line>& l) { return l.get() == objPtr; },
+                    [objPtr](const std::shared_ptr<Polygon>& poly) { return poly.get() == objPtr; }
+                    }, item->linkedObject);
             }),
         elements.end()
     );
+}
+
+void Field::removeAllElements() {
+    elements.clear();
 }
