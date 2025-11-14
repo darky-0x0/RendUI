@@ -16,7 +16,7 @@
 namespace RendUI {
 	class Engine {
 	public:
-		Engine(int width, int height, const std::string& title);
+		Engine(int width = 800, int height = 600, const std::string& title = "RendUI Engine");
 		void run();
 		
 		// Ќовые методы дл€ добавлени€ примитивов

@@ -351,7 +351,7 @@ void RendUI::Engine::savePrimitivesToJson() {
 	{
 		json vertArr = json::array();
 		for (auto& v : poly.vertices)
-			vertArr.push_back({ {"x", v.a.x}, {"y", v.a.x} });
+			vertArr.push_back({ {"x", v.a.x}, {"y", v.a.y} });
 
 		j["polygons"].push_back({ {"vertices", vertArr} });
 	}
