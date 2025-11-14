@@ -20,7 +20,6 @@ namespace RendUI {
         std::variant<std::shared_ptr<Point>, std::shared_ptr<Line>, std::shared_ptr<Polygon>> linkedObject;
 
         std::function<void()> onClick;
-        std::function<void()> onDelete;
 
         ItemElement(float h, std::shared_ptr<Point> p, PrimitivesManager* m = nullptr)
             : height(h), linkedObject(p) { 
@@ -73,7 +72,7 @@ namespace RendUI {
             if (auto but = event.getIf<sf::Event::MouseButtonPressed>()) {
                 if (but->button == sf::Mouse::Button::Left) {
                     // область удаления (в тех же координатах)
-                    sf::FloatRect deleteRect({ pos.x + width - 24.f, pos.y + height / 3 }, { 12.f, 12.f });
+                    sf::FloatRect deleteRect({ pos.x + width - 24.f, pos.y + height / 3 }, { 18.f, 18.f });
                     if (deleteRect.contains(mousePos)) {
                         std::cout << "Корректное удаление";
                         deleteLinkedObject();

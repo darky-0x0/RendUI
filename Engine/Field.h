@@ -5,12 +5,13 @@
 #include "ViewState.h"
 #include "FieldElement.h"
 #include "ItemElement.h"
+#include "TextButtonElement.h"
 
 namespace RendUI {
 
     class Field {
     public:
-        Field(const sf::Vector2f& pos, const sf::Vector2f& size);
+        Field(int positionFlag, const sf::Vector2f& size);
 
         // Шаблонный метод добавления элемента (определение здесь — шаблон должен быть в заголовке)
         template <typename T, typename... Args>
@@ -41,9 +42,17 @@ namespace RendUI {
 
         void removeAllElements();
 
-        void setSelectedElement(FieldElement* el); // новый метод
+        void setSelectedElementItems(FieldElement* el); // новый метод
+        void setSelectedElementText(FieldElement* el);
+
+        sf::Vector2f getSize() { return size; };
 
     private:
+        // Позиция
+        int positionFlag = 0;
+        // Отступ
+        float margine = 10.f;
+
         // визуальные параметры
         RoundedRectangleShape background;
         sf::Vector2f position;

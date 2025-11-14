@@ -10,9 +10,8 @@ struct overloaded : Ts... { using Ts::operator()...; };
 template<class... Ts>
 overloaded(Ts...) -> overloaded<Ts...>;
 
-Field::Field(const sf::Vector2f& pos, const sf::Vector2f& sz)
+Field::Field(int positionFlag, const sf::Vector2f& sz)
     : background(sz, 12.f),
-    position(pos),
     size(sz),
     elementSpacing(4.f),
     scrollOffset(0.f),
@@ -20,8 +19,21 @@ Field::Field(const sf::Vector2f& pos, const sf::Vector2f& sz)
     scrollbarWidth(10.f),
     draggingScrollbar(false),
     dragStartY(0.f),
-    initialScrollOffset(0.f)
+    initialScrollOffset(0.f),
+    positionFlag(positionFlag)
 {
+    float margin = 50.f;        // отступ от края окна
+    float windowWidth = 800.f;  // можно заменить на реальную ширину окна
+
+    // X-позиция
+    if (positionFlag == 0)
+        position.x = margin; // левое поле
+    else
+        position.x = windowWidth - size.x - margin; // правое поле
+
+    // Y-позицию оставляем 0, она будет центрироваться по view при draw()
+    position.y = 0.f;
+
     background.setPosition(position);
     background.setFillColor(bgColor);
     background.setOutlineThickness(1.5f);
@@ -70,7 +82,18 @@ void Field::draw(sf::RenderWindow& window, const sf::View& view) {
 
     // yCenter — верхняя координата поля (по желанию ты центрируешь фон по view)
     float yCenter = view.getCenter().y - size.y / 2.f;
-    background.setPosition({ position.x, yCenter });
+    float xPosition = 0;
+
+    if (positionFlag == 1) {
+        xPosition = view.getSize().x - size.x - margine;
+    }
+    else {
+        xPosition = margine;
+    }
+
+    position = { xPosition, yCenter };
+
+    background.setPosition(position);
     window.draw(background);
 
     // отрисовываем элементы, только те, что попадают в видимую область поля
@@ -152,9 +175,13 @@ void Field::handleEvent(const sf::Event& event, sf::RenderWindow& window, const 
         // Передаём mousePos (уже в координатах view!) — элемент сравнит mousePos с elemRect
         el->handleEvent(event, elemPos, size.x - scrollbarWidth, mousePos);
         // если элемент был кликнут
-        auto* item = dynamic_cast<RendUI::ItemElement*>(el.get());
-        if (item && item->selected) {
-            setSelectedElement(item); // <-- снимаем выделение с остальных
+        auto* item1 = dynamic_cast<RendUI::ItemElement*>(el.get());
+        auto* item2 = dynamic_cast<RendUI::TextButtonElement*>(el.get());
+        if (item1 && item1->selected) {
+            setSelectedElementItems(item1); // <-- снимаем выделение с остальных
+        }
+        else if (item2 && item2->selected) {
+            setSelectedElementText(item2);
         }
         y += el->getHeight() + 4.f;
     }
@@ -173,12 +200,20 @@ bool Field::isMouseOver(const sf::RenderWindow& window, const sf::View& view) co
     return bounds.contains(mousePos);
 }
 
-void Field::setSelectedElement(FieldElement* el) {
+void Field::setSelectedElementItems(FieldElement* el) {
     for (auto& e : elements) {
         auto* item = dynamic_cast<ItemElement*>(e.get());
         if (item) item->selected = (e.get() == el);
     }
 }
+
+void Field::setSelectedElementText(FieldElement* el) {
+    for (auto& e : elements) {
+        auto* item = dynamic_cast<TextButtonElement*>(e.get());
+        if (item) item->selected = (e.get() == el);
+    }
+}
+
 void Field::removeElementByLinkedObject(void* objPtr) {
     elements.erase(
         std::remove_if(elements.begin(), elements.end(),
@@ -198,4 +233,5 @@ void Field::removeElementByLinkedObject(void* objPtr) {
 
 void Field::removeAllElements() {
     elements.clear();
+    
 }

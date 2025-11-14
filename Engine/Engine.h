@@ -8,6 +8,9 @@
 #include "Toolbar.h"
 #include "Field.h"
 #include "ItemElement.h"
+#include "NotificationManager.h"
+#include "TextButtonElement.h"
+#include "IconButton.h"
 
 
 namespace RendUI {
@@ -21,7 +24,21 @@ namespace RendUI {
 		void addLine(Point a, Point b);
 		void addPolygon(const std::vector<Point>& vertices);
 		void deleteAllPrimitives();
+
+		// Получение примитивов
+		std::vector<Point> getPoints() { return primitives.getPoints(); };
+		std::vector<Line> getLines() { return primitives.getLines(); };
+		std::vector<Polygon> getPolygons() { return primitives.getPolygons(); };
+
+		// Работа с уведомлениями
+		void showNotification(const std::string& msg);
 		
+		// Работа с задачами
+		void addTask(const std::string& msg, std::function<void()> funct);
+
+		// Сохранение и загрузка
+		void savePrimitivesToJson();
+		void loadPrimitivesFromJson();
 
 		void handleLineTool(float x, float y);
 		void handlePolygonTool(float x, float y);
@@ -46,6 +63,24 @@ namespace RendUI {
 		bool showPreview = false;
 
 		Field leftField; // Левая панель
+		Field rightField; // Правая панель
+
+
+		// Временное хранение данных при создании примитива
+		sf::Vector2f startLinePoint;
+		std::vector<Point> polygonPoints;
+
+		// Уведомления
+		NotificationManager notifications;
+		sf::Clock deltaClock;
+
+		// Шрифт
+		sf::Font fontMain;
+
+		// Сохранение и загрузка
+		std::unique_ptr<IconButton> saveButton;
+		std::unique_ptr<IconButton> loadButton;
+
 	};
 }
 

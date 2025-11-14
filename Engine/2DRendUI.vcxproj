@@ -112,7 +112,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>G:\Мои файлы\Коддинг\C++\RendUI\Engine\SFML-3.0.2\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\Мои файлы\Коддинг\C++\RendUI\Engine\json-develop\include;G:\Мои файлы\Коддинг\C++\RendUI\Engine\SFML-3.0.2\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -154,12 +154,16 @@
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldElement.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="IconButton.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="ItemElement.h" />
+    <ClInclude Include="Notification.h" />
+    <ClInclude Include="NotificationManager.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PrimitivesManager.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RoundedRectangleShape.h" />
+    <ClInclude Include="TextButtonElement.h" />
     <ClInclude Include="Toolbar.h" />
     <ClInclude Include="ViewState.h" />
   </ItemGroup>
@@ -168,8 +172,11 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldElement.cpp" />
+    <ClCompile Include="IconButton.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="ItemElement.cpp" />
+    <ClCompile Include="Notification.cpp" />
+    <ClCompile Include="NotificationManager.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -180,6 +187,7 @@
     <ClCompile Include="PrimitivesManager.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RoundedRectangleShape.cpp" />
+    <ClCompile Include="TextButtonElement.cpp" />
     <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="ViewState.cpp" />
   </ItemGroup>

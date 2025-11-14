@@ -11,6 +11,8 @@
 #include <vector>
 #include <cmath>
 #include <functional>
+#include <algorithm>
+#include <sstream>
 
 #include <SFML/Graphics.hpp>
 
