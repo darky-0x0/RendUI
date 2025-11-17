@@ -13,6 +13,12 @@ namespace RendUI {
 			const float eps = 0.0001f;
 			return std::fabs(x - other.x) < eps && std::fabs(y - other.y) < eps;
 		}
+        Point operator*(const Point& other) const {
+            return { x * other.x, y * other.y };
+        }
+        Point operator*(const float k) const {
+            return { x * k, y * k };
+        }
 	};
 	
 	struct Line {
