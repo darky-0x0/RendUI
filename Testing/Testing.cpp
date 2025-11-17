@@ -57,10 +57,6 @@ int main()
 	testFunct(engine);
 	//engine.deleteAllPrimitives();
 	
-	Point a({ 1, 2 });
-	Point b({ 5, 6 });
-	Point c = a * b;
-	
 	engine.run();
 	return 0;
 }
