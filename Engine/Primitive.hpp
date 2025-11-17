@@ -19,6 +19,9 @@ namespace RendUI {
         Point operator*(const float k) const {
             return { x * k, y * k };
         }
+        Point operator+(const Point& other) const {
+            return { x + other.x, y + other.y };
+        }
 	};
 	
 	struct Line {
