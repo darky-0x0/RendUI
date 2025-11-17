@@ -70,7 +70,14 @@ void Renderer::drawLine(const Line& l) {
 
 
 void Renderer::drawPolygon(const Polygon& poly) {
-	for (const Line& ln : poly.vertices) {
-		drawLine(ln);
+	const auto& v = poly.vertices;
+	size_t n = v.size();
+
+	if (n < 2) return; // ѕолигон пуст или точка
+
+	for (size_t i = 0; i < n; ++i) {
+		const Point& a = v[i];
+		const Point& b = v[(i + 1) % n]; // замыкаем полигон
+		drawLine(Line{ a, b });
 	}
 }

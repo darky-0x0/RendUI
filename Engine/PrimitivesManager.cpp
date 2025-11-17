@@ -50,28 +50,19 @@ void PrimitivesManager::addPolygon(const std::vector<Point>& vertices) {
         addLine(vertices[0], vertices[1]);
     }
     else {
-        // Проверка на дубликат: простое сравнение вершин
-        for (auto& sp : polygons) {
-            if (!sp || sp->vertices.size() != vertices.size()) continue;
-
-            bool same = true;
-            for (size_t i = 0; i < vertices.size(); ++i) {
-                if (!(sp->vertices[i].a.x == vertices[i].x && sp->vertices[i].a.y == vertices[i].y &&
-                    sp->vertices[i].b.x == vertices[(i + 1) % vertices.size()].x &&
-                    sp->vertices[i].b.y == vertices[(i + 1) % vertices.size()].y)) {
-                    same = false;
-                    break;
-                }
-            }
-            if (same) return; // дубликат найден
-        }
-
         auto sp = std::make_shared<Polygon>();
-        for (size_t i = 0; i < vertices.size(); ++i) {
-            Point a = vertices[i];
-            Point b = vertices[(i + 1) % vertices.size()];
-            sp->vertices.push_back({ a, b });
+        sp->vertices = vertices;
+
+        // Проверка на дубликат с использованием operator==
+        for (auto& existing : polygons) {
+            if (!existing || existing->vertices.size() != vertices.size())
+                continue;
+
+            if (*existing == *sp) { // сравниваем сами объекты Polygon
+                return; // Дубликат найден → ничего не делаем
+            }
         }
+
         polygons.push_back(sp);
 
         if (elementList)
@@ -127,8 +118,17 @@ bool PrimitivesManager::deletePrimitiveAt(float x, float y) {
 
     // Проверяем полигоны
     for (auto it = polygons.begin(); it != polygons.end(); ++it) {
-        for (auto& edge : (*it)->vertices) {
-            if (distanceToSegment(click, edge.a, edge.b) <= radius) {
+        Polygon* poly = it->get();
+        auto& verts = poly->vertices;
+        size_t n = verts.size();
+
+        if (n < 2) continue; // На всякий случай
+
+        for (size_t i = 0; i < n; ++i) {
+            const Point& a = verts[i];
+            const Point& b = verts[(i + 1) % n]; // замыкание полигона
+
+            if (distanceToSegment(click, a, b) <= radius) {
                 if (elementList)
                     elementList->removeElementByLinkedObject(it->get());
                 polygons.erase(it);
@@ -136,6 +136,7 @@ bool PrimitivesManager::deletePrimitiveAt(float x, float y) {
             }
         }
     }
+
     return false;
 }
 

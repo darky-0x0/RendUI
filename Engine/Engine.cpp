@@ -85,6 +85,7 @@ void Engine::run() {
 			// Сбрасываем состояние рисования, если инструмент изменился
 			drawingInProgress = false;
 			tempPrimitives.clearAll();
+			polygonPoints.clear();
 		}
 
 		// ----------------------------------------------------- ИВЕНТЫ -----------------------------------------------------
@@ -351,7 +352,7 @@ void RendUI::Engine::savePrimitivesToJson() {
 	{
 		json vertArr = json::array();
 		for (auto& v : poly.vertices)
-			vertArr.push_back({ {"x", v.a.x}, {"y", v.a.y} });
+			vertArr.push_back({ {"x", v.x}, {"y", v.y} });
 
 		j["polygons"].push_back({ {"vertices", vertArr} });
 	}
@@ -432,6 +433,7 @@ void Engine::handlePolygonTool(float x, float y) {
 	}
 
 	if (polygonPoints.size() > 2 && (polygonPoints[polygonPoints.size()-1].x == polygonPoints[0].x && polygonPoints[polygonPoints.size() - 1].y == polygonPoints[0].y)) {
+		polygonPoints.pop_back();
 		addPolygon(polygonPoints);
 		polygonPoints.clear();
 		tempPrimitives.clearAll();
