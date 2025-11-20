@@ -21,8 +21,16 @@ namespace RendUI {
 		
 		// Новые методы для добавления примитивов
 		void addPoint(float x, float y);
+		void addPoint(float x, float y, sf::Color color);
 		void addLine(Point a, Point b);
+		void addLine(Point a, Point b, sf::Color color);
 		void addPolygon(const std::vector<Point>& vertices);
+		void addPolygon(std::vector<Point> vertices, sf::Color color);
+
+		void addPoint(const Point& point);
+		void addLine(const Line& line);
+		void addPolygon(Polygon& polygon);
+
 		void deleteAllPrimitives();
 
 		// Получение примитивов

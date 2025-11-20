@@ -5,6 +5,74 @@
 
 using namespace RendUI;
 
+// Добавляем перегрузки с цветом
+void PrimitivesManager::addPoint(float x, float y, sf::Color color) {
+    for (auto& sp : points) {
+        if (sp && sp->x == x && sp->y == y)
+            return;
+    }
+
+    Point p({ x, y });
+    p.color = color;  // Устанавливаем цвет
+    auto sp = std::make_shared<Point>(p);
+    points.push_back(sp);
+
+    if (elementList)
+        elementList->addElement<ItemElement>(40.f, sp, this);
+}
+
+void PrimitivesManager::addLine(Point a, Point b, sf::Color color) {
+    if (a.x == b.x && a.y == b.y) {
+        addPoint(a.x, a.y, color);
+    }
+    else {
+        for (auto& sp : lines) {
+            if (!sp) continue;
+            if ((sp->a.x == a.x && sp->a.y == a.y && sp->b.x == b.x && sp->b.y == b.y) ||
+                (sp->a.x == b.x && sp->a.y == b.y && sp->b.x == a.x && sp->b.y == a.y))
+                return;
+        }
+
+        a.color = color;
+        b.color = color;
+        Line l({ a, b });
+        l.color = color;  // Устанавливаем цвет
+        auto sp = std::make_shared<Line>(l);
+        lines.push_back(sp);
+
+        if (elementList)
+            elementList->addElement<ItemElement>(40.f, sp, this);
+    }
+}
+
+void PrimitivesManager::addPolygon(std::vector<Point>& vertices, sf::Color color) {
+    if (vertices.size() == 3 && vertices[0].x == vertices[1].x && vertices[0].y == vertices[1].y && vertices[0].x == vertices[2].x && vertices[0].y == vertices[2].y) {
+        addPoint(vertices[0].x, vertices[0].y, color);
+    }
+    else if (vertices.size() == 3 && vertices[0].x == vertices[2].x && vertices[0].y == vertices[2].y && (vertices[0].x != vertices[1].x || vertices[0].y != vertices[1].y)) {
+        addLine(vertices[0], vertices[1], color);
+    }
+    else {
+        auto sp = std::make_shared<Polygon>();
+        for (int i = 0; i < vertices.size(); i++) vertices[i].color = color;
+        sp->vertices = vertices;
+        sp->color = color;  // Устанавливаем цвет
+
+        for (auto& existing : polygons) {
+            if (!existing || existing->vertices.size() != vertices.size())
+                continue;
+            if (*existing == *sp) {
+                return;
+            }
+        }
+
+        polygons.push_back(sp);
+
+        if (elementList)
+            elementList->addElement<ItemElement>(40.f, sp, this);
+    }
+}
+
 void PrimitivesManager::addPoint(float x, float y) {
     // Проверка на дубликат
     for (auto& sp : points) {
@@ -69,6 +137,21 @@ void PrimitivesManager::addPolygon(const std::vector<Point>& vertices) {
             elementList->addElement<ItemElement>(40.f, sp, this);
     }
 }
+
+
+// Добавляем перегрузки с готовыми объектами
+void PrimitivesManager::addPoint(const Point& point) {
+    addPoint(point.x, point.y, point.color);
+}
+
+void PrimitivesManager::addLine(const Line& line) {
+    addLine(line.a, line.b, line.color);
+}
+
+void PrimitivesManager::addPolygon(Polygon& polygon) {
+    addPolygon(polygon.vertices, polygon.color);
+}
+
 
 // Удаление по shared_ptr
 void PrimitivesManager::deletePoint(std::shared_ptr<Point> p) {

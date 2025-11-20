@@ -8,8 +8,15 @@ namespace RendUI {
     public:
         // Добавление примитивов
         void addPoint(float x, float y);
+        void addPoint(float x, float y, sf::Color color);
         void addLine(Point a, Point b);
+        void addLine(Point a, Point b, sf::Color color);
         void addPolygon(const std::vector<Point>& vertices);
+        void addPolygon(std::vector<Point>& vertices, sf::Color color);
+
+        void addPoint(const Point& point);
+        void addLine(const Line& line);
+        void addPolygon(Polygon& polygon);
 
         void deletePoint(std::shared_ptr<Point> p);
         void deleteLine(std::shared_ptr<Line> l);

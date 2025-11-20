@@ -51,33 +51,32 @@ void Renderer::update(const PrimitivesManager& primitives) {
 
 void Renderer::drawPoint(const Point& p, const float radius) {
 	sf::CircleShape circle(radius);
-	circle.setFillColor(sf::Color::White);
-	// Центрируем круг по координатам точки
+	circle.setFillColor(p.color);  // Используем цвет точки вместо sf::Color::White
 	circle.setPosition({ p.x * step - radius, p.y * step - radius });
 	window.draw(circle);
 }
 
-
 void Renderer::drawLine(const Line& l) {
 	sf::Vertex verts[2] = {
-		sf::Vertex{ { l.a.x * step, l.a.y * step }, sf::Color::White},
-		sf::Vertex{ { l.b.x * step, l.b.y * step }, sf::Color::White}
+		sf::Vertex{ { l.a.x * step, l.a.y * step }, l.color },  // Используем цвет линии
+		sf::Vertex{ { l.b.x * step, l.b.y * step }, l.color }   // Используем цвет линии
 	};
 	drawPoint(l.a, 4);
 	drawPoint(l.b, 4);
 	window.draw(verts, 2, sf::PrimitiveType::Lines);
 }
 
-
 void Renderer::drawPolygon(const Polygon& poly) {
 	const auto& v = poly.vertices;
 	size_t n = v.size();
-
-	if (n < 2) return; // Полигон пуст или точка
+	if (n < 2) return;
 
 	for (size_t i = 0; i < n; ++i) {
 		const Point& a = v[i];
-		const Point& b = v[(i + 1) % n]; // замыкаем полигон
-		drawLine(Line{ a, b });
+		const Point& b = v[(i + 1) % n];
+		// Создаем линию с цветом полигона
+		Line edge{ a, b };
+		edge.color = poly.color;  // Устанавливаем цвет ребра равным цвету полигона
+		drawLine(edge);
 	}
 }
