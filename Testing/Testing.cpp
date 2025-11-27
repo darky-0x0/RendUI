@@ -55,7 +55,6 @@ int main()
 	engine.addPolygon({ {8.f, 8.f}, {10.f, 8.f}, {11.f, 10.f}, {9.f, 11.f} });
 	engine.showNotification("Добро пожаловать в программу!");
 	testFunct(engine);
-	//engine.deleteAllPrimitives();
 	
 	
 	engine.run();
@@ -66,8 +65,9 @@ int main()
 void testFunct(Engine& engine) {
 	engine.addTask("Hello мир2!", [&engine] {
 		std::cout << "Привет мир!";
-		engine.showNotification("Лан л");
+		engine.showNotification("Лан лан");
 		std::vector<Point> points = engine.getPoints();
 		std::cout << points[0].x << ":" << points[0].y;
+		engine.deleteAllPrimitives();
 	});
 }

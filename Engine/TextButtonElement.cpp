@@ -70,6 +70,7 @@ void TextButtonElement::handleEvent(const sf::Event& event, const sf::Vector2f& 
             sf::FloatRect bounds(position, background.getSize());
             if (bounds.contains(mousePos) && callback) {
                 selected = true;
+                
                 callback(); // вызываем пользовательскую функцию
             }
         }
