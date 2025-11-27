@@ -347,12 +347,13 @@ void RendUI::Engine::addTask(const std::string& msg, std::function<void()> funct
 		msg,
 		rightField.getSize().x,   // ширина поля
 		fontMain,
-		funct
+		funct,
+		this
 	);
 }
 
-void RendUI::Engine::savePrimitivesToJson() {
-	std::wstring filePath = openFileDialog(true);
+void RendUI::Engine::savePrimitivesToJson(std::wstring filePath) {
+	if (filePath == L"") filePath = openFileDialog(true);
 	if (filePath.empty()) return;
 
 	json j;

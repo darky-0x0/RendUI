@@ -4,6 +4,8 @@
 
 namespace RendUI {
 
+    class Engine;
+
     class PrimitivesManager {
     public:
         // Добавление примитивов

@@ -45,7 +45,7 @@ namespace RendUI {
 		void addTask(const std::string& msg, std::function<void()> funct);
 
 		// Сохранение и загрузка
-		void savePrimitivesToJson();
+		void savePrimitivesToJson(std::wstring filePath = L"");
 		void loadPrimitivesFromJson();
 
 		void handleLineTool(float x, float y);

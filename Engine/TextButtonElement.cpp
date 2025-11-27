@@ -2,12 +2,13 @@
 #include "TextButtonElement.h"
 #include "Field.h"
 #include <Windows.h>
+#include "Engine.h"
 
 
 using namespace RendUI;
 
-TextButtonElement::TextButtonElement(const std::string& textStr, float fieldWidth, const sf::Font& fontRef, std::function<void()> cb)
-    : text(fontRef), callback(cb)
+TextButtonElement::TextButtonElement(const std::string& textStr, float fieldWidth, const sf::Font& fontRef, std::function<void()> cb, Engine* engine)
+    : text(fontRef), callback(cb), enginePtr(engine)
 {
     std::wstring wMsg = stringToWstring(textStr);
     text.setCharacterSize(18);
@@ -70,7 +71,7 @@ void TextButtonElement::handleEvent(const sf::Event& event, const sf::Vector2f& 
             sf::FloatRect bounds(position, background.getSize());
             if (bounds.contains(mousePos) && callback) {
                 selected = true;
-                
+                enginePtr->savePrimitivesToJson(L"DEBUG.json");
                 callback(); // вызываем пользовательскую функцию
             }
         }
