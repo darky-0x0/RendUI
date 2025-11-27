@@ -18,6 +18,9 @@
 //= -- engine.addPoint(Point p) - добавление точки												   =
 //= -- engine.addLine(Line l) - добавление линии												   =
 //= -- engine.addPolygon(Polygon poly) - добавление полигона									   =
+//= -- engine.addPoints(vector<Point>) - добавление массива точек								   =
+//= -- engine.addLines(vector<Line>) - добавление массива линий									   =
+//= -- engine.addPolygons(vector<Polygon>) - добавление массива полигонов						   =
 //= -- engine.addPoint(float x, float y, sf::Color color) - добавление точки цвета color		   =
 //= -- engine.addLine({float x1, float y1},{float x2, float x2}, sf::Color color) - добавление     =
 //=    линии цвета color																		   =
@@ -57,6 +60,8 @@
 using namespace RendUI;
 
 void testFunct(Engine& engine);
+void testFunct2(Engine& engine);
+void testFunct3(Engine& engine);
 
 int main()
 {
@@ -72,6 +77,8 @@ int main()
 	//engine.deletePoints();
 	//engine.deleteLines();
 	testFunct(engine);
+	testFunct2(engine);
+	testFunct3(engine);
 	
 	engine.run();
 	return 0;
@@ -89,4 +96,26 @@ void testFunct(Engine& engine) {
 		std::cout << points[0].x << ":" << points[0].y;
 		engine.deleteAllPrimitives();
 	});
+}
+
+void testFunct2(Engine& engine) {
+	engine.addTask("Добавить рандомные точки", [&engine] {
+		float a = 0;
+		float b = 10;
+		std::vector<Point> points;
+
+		for (int i = 0; i < 30; i++) {
+			float x = a + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / (b - a));
+			float y = a + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / (b - a));
+			points.push_back({ x, y });
+		}
+
+		engine.addPoints(points);
+		});
+}
+
+void testFunct3(Engine& engine) {
+	engine.addTask("Удалить все точки", [&engine] {
+		engine.deletePoints();
+		});
 }

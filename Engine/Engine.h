@@ -31,6 +31,10 @@ namespace RendUI {
 		void addLine(const Line& line);
 		void addPolygon(Polygon& polygon);
 
+		void addPoints(const std::vector<Point>& points);
+		void addLines(const std::vector<Line>& lines);
+		void addPolygons(std::vector<Polygon>& polygons);
+
 		// Удаление примитивов по типу
 		void deletePoints();
 		void deleteLines();

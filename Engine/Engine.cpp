@@ -341,6 +341,24 @@ void Engine::addPolygon(Polygon& polygon) {
 	primitives.addPolygon(polygon.vertices, polygon.color);
 }
 
+void RendUI::Engine::addPoints(const std::vector<Point>& points) {
+	for (int i = 0; i < points.size(); i++) {
+		addPoint(points[i]);
+	}
+}
+
+void RendUI::Engine::addLines(const std::vector<Line>& lines) {
+	for (int i = 0; i < lines.size(); i++) {
+		addLine(lines[i]);
+	}
+}
+
+void RendUI::Engine::addPolygons(std::vector<Polygon>& polygons) {
+	for (int i = 0; i < polygons.size(); i++) {
+		addPolygon(polygons[i]);
+	}
+}
+
 void RendUI::Engine::addTask(const std::string& msg, std::function<void()> funct) {
 	rightField.addElement<TextButtonElement>(
 		msg,
