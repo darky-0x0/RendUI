@@ -31,6 +31,11 @@ namespace RendUI {
 		void addLine(const Line& line);
 		void addPolygon(Polygon& polygon);
 
+		// Удаление примитивов по типу
+		void deletePoints();
+		void deleteLines();
+		void deletePolygons();
+
 		void deleteAllPrimitives();
 
 		// Получение примитивов

@@ -23,9 +23,13 @@
 //=    линии цвета color																		   =
 //= -- engine.addPolygon({float x1, float y1}, ..., {float xn, float yn}, sf::Color color) -	   =
 //=    добавление полигона цвета color															   =
+//= -- primitive.color = sf::Color::<Цвет> - изменение цвета для конкретного примитива			   =
 //= -- vector<Point> engine.getPoints() - возвращение копии вектора точек						   =
 //= -- vector<Line> engine.getLines() - возвращение копии вектора линий							   =
 //= -- vector<Polygon> engine.getPolygons() - возвращение копии вектора полигонов				   =
+//= -- engine.deletePoints() - удаление точек													   =
+//= -- engine.deleteLines() - удаление линий													   =
+//= -- engine.deletePolygons() - удаление полигонов												   =
 //= -- engine.deleteAllPrimitives() - удаление всех примитивов из памяти						   =
 //= 																							   =
 //= Интерфейс:																					   =
@@ -65,6 +69,8 @@ int main()
 	engine.addLine({ 3.f, 3.f }, { 6.f, 6.f }, sf::Color::Yellow);
 	engine.addPolygon({ {8.f, 8.f}, {10.f, 8.f}, {11.f, 10.f}, {9.f, 11.f} });
 	engine.showNotification("Добро пожаловать в программу!");
+	//engine.deletePoints();
+	//engine.deleteLines();
 	testFunct(engine);
 	
 	engine.run();

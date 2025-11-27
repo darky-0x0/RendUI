@@ -341,7 +341,6 @@ void Engine::addPolygon(Polygon& polygon) {
 	primitives.addPolygon(polygon.vertices, polygon.color);
 }
 
-
 void RendUI::Engine::addTask(const std::string& msg, std::function<void()> funct) {
 	rightField.addElement<TextButtonElement>(
 		msg,
@@ -534,6 +533,21 @@ void Engine::deleteAllPrimitives() {
 	tempPrimitives.clearAll();
 	polygonPoints.clear();
 	leftField.removeAllElements();
+}
+
+void RendUI::Engine::deletePoints() {
+	primitives.clearPoints();
+	leftField.removePoints();
+}
+
+void RendUI::Engine::deleteLines() {
+	primitives.clearLines();
+	leftField.removeLines();
+}
+
+void RendUI::Engine::deletePolygons() {
+	primitives.clearPolygons();
+	leftField.removePolygons();
 }
 
 void Engine::showNotification(const std::string& msg) {

@@ -24,6 +24,10 @@ namespace RendUI {
         void deleteLine(std::shared_ptr<Line> l);
         void deletePolygon(std::shared_ptr<Polygon> poly);
 
+        void clearPoints();
+        void clearLines();
+        void clearPolygons();
+
         void clearAll();
 
         // Получение данных

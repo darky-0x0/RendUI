@@ -166,6 +166,18 @@ void PrimitivesManager::deletePolygon(std::shared_ptr<Polygon> poly) {
     polygons.erase(std::remove(polygons.begin(), polygons.end(), poly), polygons.end());
 }
 
+void RendUI::PrimitivesManager::clearPoints() {
+    points.clear();
+}
+
+void RendUI::PrimitivesManager::clearLines() {
+    lines.clear();
+}
+
+void RendUI::PrimitivesManager::clearPolygons() {
+    polygons.clear();
+}
+
 void PrimitivesManager::clearAll() {
     points.clear();
     lines.clear();

@@ -235,3 +235,42 @@ void Field::removeAllElements() {
     elements.clear();
     
 }
+
+void Field::removePoints() {
+    elements.erase(
+        std::remove_if(elements.begin(), elements.end(),
+            [](const std::unique_ptr<FieldElement>& el) {
+                auto item = dynamic_cast<ItemElement*>(el.get());
+                if (!item) return false;
+
+                return std::holds_alternative<std::shared_ptr<Point>>(item->linkedObject);
+            }),
+        elements.end()
+    );
+}
+
+void Field::removeLines() {
+    elements.erase(
+        std::remove_if(elements.begin(), elements.end(),
+            [](const std::unique_ptr<FieldElement>& el) {
+                auto item = dynamic_cast<ItemElement*>(el.get());
+                if (!item) return false;
+
+                return std::holds_alternative<std::shared_ptr<Line>>(item->linkedObject);
+            }),
+        elements.end()
+    );
+}
+
+void Field::removePolygons() {
+    elements.erase(
+        std::remove_if(elements.begin(), elements.end(),
+            [](const std::unique_ptr<FieldElement>& el) {
+                auto item = dynamic_cast<ItemElement*>(el.get());
+                if (!item) return false;
+
+                return std::holds_alternative<std::shared_ptr<Polygon>>(item->linkedObject);
+            }),
+        elements.end()
+    );
+}

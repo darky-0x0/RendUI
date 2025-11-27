@@ -42,6 +42,10 @@ namespace RendUI {
 
         void removeAllElements();
 
+        void removePoints();
+        void removeLines();
+        void removePolygons();
+
         void setSelectedElementItems(FieldElement* el); // новый метод
         void setSelectedElementText(FieldElement* el);
 
