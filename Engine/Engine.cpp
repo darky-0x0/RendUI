@@ -85,6 +85,7 @@ void Engine::run() {
 			// Сбрасываем состояние рисования, если инструмент изменился
 			drawingInProgress = false;
 			tempPrimitives.clearAll();
+			polygonPoints.clear();
 		}
 
 		// ----------------------------------------------------- ИВЕНТЫ -----------------------------------------------------
@@ -314,6 +315,32 @@ void Engine::addPoint(float x, float y) { primitives.addPoint(x, y); }
 void Engine::addLine(Point a, Point b) { primitives.addLine(a, b); }
 void Engine::addPolygon(const std::vector<Point>& vertices) { primitives.addPolygon(vertices); }
 
+// Добавляем перегрузки с цветом
+void Engine::addPoint(float x, float y, sf::Color color) {
+	primitives.addPoint(x, y, color);
+}
+
+void Engine::addLine(Point a, Point b, sf::Color color) {
+	primitives.addLine(a, b, color);
+}
+
+void Engine::addPolygon(std::vector<Point> vertices, sf::Color color) {
+	primitives.addPolygon(vertices, color);
+}
+
+// Добавляем перегрузки с готовыми объектами
+void Engine::addPoint(const Point& point) {
+	primitives.addPoint(point.x, point.y, point.color);
+}
+
+void Engine::addLine(const Line& line) {
+	primitives.addLine(line.a, line.b, line.color);
+}
+
+void Engine::addPolygon(Polygon& polygon) {
+	primitives.addPolygon(polygon.vertices, polygon.color);
+}
+
 
 void RendUI::Engine::addTask(const std::string& msg, std::function<void()> funct) {
 	rightField.addElement<TextButtonElement>(
@@ -332,34 +359,61 @@ void RendUI::Engine::savePrimitivesToJson() {
 
 	// ===== POINTS =====
 	auto pts = getPoints();
-	for (auto& p : pts)
-		j["points"].push_back({ {"x", p.x}, {"y", p.y} });
+	for (auto& p : pts) {
+		j["points"].push_back({
+			{"x", p.x},
+			{"y", p.y},
+			{"color", {
+				{"r", p.color.r},
+				{"g", p.color.g},
+				{"b", p.color.b}
+			}}
+			});
+	}
 
 	// ===== LINES =====
 	auto lines = getLines();
-	for (auto& l : lines)
-	{
+	for (auto& l : lines) {
 		j["lines"].push_back({
 			{"a", { {"x", l.a.x}, {"y", l.a.y} }},
-			{"b", { {"x", l.b.x}, {"y", l.b.y} }}
+			{"b", { {"x", l.b.x}, {"y", l.b.y} }},
+			{"color", {
+				{"r", l.color.r},
+				{"g", l.color.g},
+				{"b", l.color.b}
+			}}
 			});
 	}
 
 	// ===== POLYGONS =====
 	auto polys = getPolygons();
-	for (auto& poly : polys)
-	{
+	for (auto& poly : polys) {
 		json vertArr = json::array();
-		for (auto& v : poly.vertices)
-			vertArr.push_back({ {"x", v.a.x}, {"y", v.a.y} });
+		for (auto& v : poly.vertices) {
+			vertArr.push_back({
+				{"x", v.x},
+				{"y", v.y},
+				{"color", {
+					{"r", v.color.r},
+					{"g", v.color.g},
+					{"b", v.color.b}
+				}}
+				});
+		}
 
-		j["polygons"].push_back({ {"vertices", vertArr} });
+		j["polygons"].push_back({
+			{"vertices", vertArr},
+			{"color", {
+				{"r", poly.color.r},
+				{"g", poly.color.g},
+				{"b", poly.color.b}
+			}}
+			});
 	}
 
 	std::ofstream file(filePath);
 	file << j.dump(4);
 	file.close();
-
 }
 
 void RendUI::Engine::loadPrimitivesFromJson() {
@@ -376,33 +430,62 @@ void RendUI::Engine::loadPrimitivesFromJson() {
 	deleteAllPrimitives();
 
 	// ===== POINTS =====
-	if (j.contains("points"))
-	{
-		for (auto& p : j["points"])
-			addPoint(p["x"], p["y"]);
+	if (j.contains("points")) {
+		for (auto& p : j["points"]) {
+			sf::Color color = sf::Color::White;
+			if (p.contains("color")) {
+				color = sf::Color(
+					p["color"]["r"],
+					p["color"]["g"],
+					p["color"]["b"]
+				);
+			}
+			addPoint(p["x"], p["y"], color);
+		}
 	}
 
 	// ===== LINES =====
-	if (j.contains("lines"))
-	{
-		for (auto& l : j["lines"])
-		{
+	if (j.contains("lines")) {
+		for (auto& l : j["lines"]) {
 			Point a{ l["a"]["x"], l["a"]["y"] };
 			Point b{ l["b"]["x"], l["b"]["y"] };
-			addLine(a, b);
+			sf::Color color = sf::Color::White;
+			if (l.contains("color")) {
+				color = sf::Color(
+					l["color"]["r"],
+					l["color"]["g"],
+					l["color"]["b"]
+				);
+			}
+			addLine(a, b, color);
 		}
 	}
 
 	// ===== POLYGONS =====
-	if (j.contains("polygons"))
-	{
-		for (auto& poly : j["polygons"])
-		{
+	if (j.contains("polygons")) {
+		for (auto& poly : j["polygons"]) {
 			std::vector<Point> verts;
-			for (auto& v : poly["vertices"])
-				verts.push_back({ v["x"], v["y"] });
+			for (auto& v : poly["vertices"]) {
+				Point point{ v["x"], v["y"] };
+				if (v.contains("color")) {
+					point.color = sf::Color(
+						v["color"]["r"],
+						v["color"]["g"],
+						v["color"]["b"]
+					);
+				}
+				verts.push_back(point);
+			}
 
-			addPolygon(verts);
+			sf::Color color = sf::Color::White;
+			if (poly.contains("color")) {
+				color = sf::Color(
+					poly["color"]["r"],
+					poly["color"]["g"],
+					poly["color"]["b"]
+				);
+			}
+			addPolygon(verts, color);
 		}
 	}
 }
@@ -432,6 +515,7 @@ void Engine::handlePolygonTool(float x, float y) {
 	}
 
 	if (polygonPoints.size() > 2 && (polygonPoints[polygonPoints.size()-1].x == polygonPoints[0].x && polygonPoints[polygonPoints.size() - 1].y == polygonPoints[0].y)) {
+		polygonPoints.pop_back();
 		addPolygon(polygonPoints);
 		polygonPoints.clear();
 		tempPrimitives.clearAll();

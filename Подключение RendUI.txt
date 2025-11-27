@@ -15,7 +15,8 @@
 Вся информация о командах содержится в Testing.cpp
 
 
-В данной проекте использовались: SFML, nlohmann/json. Всё права принадлежать разработчикам.
+
+В данной проекте использовались: SFML, nlohmann/json. Всё права принадлежат разработчикам.
 
 json - https://github.com/nlohmann/json
 SFML - https://github.com/SFML/SFML
